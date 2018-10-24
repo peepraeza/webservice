@@ -8,7 +8,7 @@ $server->configureWSDL('airdata', 'urn:airdata');
 
 // Register the data structures used by the service
 $server->wsdl->addComplexType(
-    'Air_Data',
+    'AirData',
     'complexType',
     'struct',
     'sequence',
@@ -32,8 +32,8 @@ $server->wsdl->addComplexType(
     )
 );
 
-// if(!isset($HTTP_RAW_POST_DATA)){
-//     $HTTP_RAW_POST_DATA = file_get_contents('php://input');
+if(!isset($HTTP_RAW_POST_DATA)){
+    $HTTP_RAW_POST_DATA = file_get_contents('php://input');
 // }
 // Define the method as a PHP function
 function set_data($data) {
@@ -55,9 +55,7 @@ function set_data($data) {
 $server->register('set_data',                    // method name
     array('data' => 'tns:AirData'),          // input parameters
     array('return' => 'xsd:string'),    // output parameters
-    'urn:airdata',                         // namespace
-    'urn:airdata#set_data'                   // soapaction
-);
+    'urn:airdata');
 
 function get_data($room) {
     $dbcon =  mysqli_connect('us-cdbr-iron-east-01.cleardb.net', 'b527b3315d2375', '50a5650c', 'heroku_412cbb6c0f293a3') or die('not connect database'.mysqli_connect_error());
@@ -79,8 +77,7 @@ function get_data($room) {
 $server->register('get_data',                    // method name
     array('room' => 'xsd:string'),
     array('return' => 'tns:GetAir'),    // output parameters
-                        'urn:airdata',                         // namespace
-                        'urn:airdata#get_data');                  // soapaction
+                        'urn:airdata');                  // soapaction
 
 
 // Use the request to (try to) invoke the service
