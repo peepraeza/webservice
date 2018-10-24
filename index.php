@@ -1,6 +1,6 @@
 <?php
 require_once "lib/nusoap.php";
-require_once "connectdb.php";
+require "connectdb.php";
 $us = "urn:powerdata";
 $server = new soap_server();
 $server->configureWSDL('PowerData', $us);
