@@ -4,15 +4,11 @@ require_once('lib/nusoap.php');
 // Create the server instance
 $server = new soap_server();
 // Initialize WSDL support
-$server->configureWSDL('airData', 'urn:airData');
-
-if(!isset($HTTP_RAW_POST_DATA)){
-    $HTTP_RAW_POST_DATA = file_get_contents('php://input');
-}
+$server->configureWSDL('airdata', 'urn:airdata');
 
 // Register the data structures used by the service
 $server->wsdl->addComplexType(
-    'AirData',
+    'Air_Data',
     'complexType',
     'struct',
     'sequence',
@@ -57,11 +53,11 @@ function set_data($data) {
 $server->register('set_data',                    // method name
     array('data' => 'tns:AirData'),          // input parameters
     array('return' => 'xsd:string'),    // output parameters
-    'urn:airData',                         // namespace
-    'urn:airData#set_data'                   // soapaction
+    'urn:airdata',                         // namespace
+    'urn:airdata#set_data'                   // soapaction
 );
 
-function getData($room) {
+function get_data($room) {
     $dbcon =  mysqli_connect('us-cdbr-iron-east-01.cleardb.net', 'b527b3315d2375', '50a5650c', 'heroku_412cbb6c0f293a3') or die('not connect database'.mysqli_connect_error());
     mysqli_set_charset($dbcon, 'utf8');
     $query = "SELECT * FROM data";
@@ -81,11 +77,11 @@ function getData($room) {
 $server->register('get_data',                    // method name
     array('room' => 'xsd:string'),
     array('return' => 'tns:GetAir'),    // output parameters
-                        'urn:airData',                         // namespace
-                        'urn:airData#get_data');                  // soapaction
+                        'urn:airdata',                         // namespace
+                        'urn:airdata#get_data');                  // soapaction
 
 
 // Use the request to (try to) invoke the service
-// $HTTP_RAW_POST_DATA = isset($HTTP_RAW_POST_DATA) ? $HTTP_RAW_POST_DATA : '';
+$HTTP_RAW_POST_DATA = isset($HTTP_RAW_POST_DATA) ? $HTTP_RAW_POST_DATA : '';
 $server->service($HTTP_RAW_POST_DATA);
 ?>
