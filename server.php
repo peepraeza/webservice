@@ -16,7 +16,7 @@ $server->wsdl->addComplexType(
     array(
         'roomid' => array('name' => 'roomid', 'type' => 'xsd:integer'),
         'time' => array('name' => 'time', 'type' => 'xsd:string'),
-        'temperature' => array('name' => 'temp', 'type' => 'xsd:float'),
+        'temperature' => array('name' => 'temperature', 'type' => 'xsd:float'),
         'humidity' => array('name' => 'humidity', 'type' => 'xsd:float'),
     )
 );
@@ -41,7 +41,7 @@ function set_data($data) {
     $time = $data['time'];
     $temperature = $data['temperature'];
     $humidity = $data['humidity'];
-    $query = "INSERT INTO data (roomid, time, temperature, humidity) VALUES ('$roomid','$time','$temperature','$humidity')";
+    $query = "INSERT INTO data_table(roomid, time, temperature, humidity) VALUES('$room','$time','$temperature','$humidity')";
     // $query = "INSERT INTO data_table(room, time, temp, humidity) VALUES('01', '12-09-2016 05:00', '22.5', '10.2')";
     $result = mysqli_query($dbcon, $query);
     mysqli_close($dbcon);
@@ -60,15 +60,12 @@ $server->register('set_data',                    // method name
 function get_data($room) {
     $dbcon =  mysqli_connect('us-cdbr-iron-east-01.cleardb.net', 'b527b3315d2375', '50a5650c', 'heroku_412cbb6c0f293a3') or die('not connect database'.mysqli_connect_error());
     mysqli_set_charset($dbcon, 'utf8');
-
     $query = "SELECT * FROM data";
     $result = mysqli_query($dbcon, $query);
-    if($result != null){
-        if($result){
-            $data = array();
-            while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
-                $data[] = array('roomid'=>$row['roomid'], 'time'=>$row['time'], 'temperature'=>$row['temperature'], 'humidity'=>$row['humidity']);
-            }
+    if($result){
+        $data = array();
+        while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+            $data[] = array('roomid'=>$row['roomid'], 'time'=>$row['time'], 'temperature'=>$row['temperature'], 'humidity'=>$row['humidity']);
         }
     }
     
@@ -87,5 +84,4 @@ $server->register('get_data',                    // method name
 // Use the request to (try to) invoke the service
 $HTTP_RAW_POST_DATA = isset($HTTP_RAW_POST_DATA) ? $HTTP_RAW_POST_DATA : '';
 $server->service($HTTP_RAW_POST_DATA);
-
 ?>
