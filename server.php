@@ -14,7 +14,7 @@ $server->wsdl->addComplexType(
     'sequence',
     '',
     array(
-        'room' => array('name' => 'room', 'type' => 'xsd:integer'),
+        'roomid' => array('name' => 'roomid', 'type' => 'xsd:integer'),
         'time' => array('name' => 'time', 'type' => 'xsd:string'),
         'temperature' => array('name' => 'temp', 'type' => 'xsd:float'),
         'humidity' => array('name' => 'humidity', 'type' => 'xsd:float'),
@@ -37,11 +37,11 @@ $server->wsdl->addComplexType(
 function set_data($data) {
     $dbcon =  mysqli_connect('us-cdbr-iron-east-01.cleardb.net', 'b527b3315d2375', '50a5650c', 'heroku_412cbb6c0f293a3') or die('not connect database'.mysqli_connect_error());
     mysqli_set_charset($dbcon, 'utf8');
-    $room = $data['roomid'];
+    $roomid = $data['roomid'];
     $time = $data['time'];
-    $temp = $data['temperature'];
+    $temperature = $data['temperature'];
     $humidity = $data['humidity'];
-    $query = "INSERT INTO data(room, time, temp, humidity) VALUES('$roomid','$time','$temperature','$humidity')";
+    $query = "INSERT INTO data (roomid, time, temperature, humidity) VALUES('$roomid','$time','$temperature','$humidity')";
     // $query = "INSERT INTO data_table(room, time, temp, humidity) VALUES('01', '12-09-2016 05:00', '22.5', '10.2')";
     $result = mysqli_query($dbcon, $query);
     mysqli_close($dbcon);
