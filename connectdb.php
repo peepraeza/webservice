@@ -1,21 +1,3 @@
-<?php
-require 'lib/nusoap.php';
-
-$server = new nusoap_server(); // Create a instance for nusoap server
-$server->configureWSDL("Soap Demo","urn:soapdemo"); // Configure WSDL file
-
-// function hello
-function hello($name) {
-		return "Hello, $name";
-	}
-
-
-$server->register("hello", // function hello
-    array("name" => "xsd:string"), // input type string
-    array("return" => "xsd:string"));  // output type string
-
-// Run service
-$server->service(file_get_contents("php://input"));
-
-?>
-
+<?php 
+	$dbcon =  mysqli_connect('us-cdbr-iron-east-04.cleardb.net', 'b29063783735c9', '55796c19', 'heroku_9a687a4905ad805') or die('not connect database'.mysqli_connect_error());
+	mysqli_set_charset($dbcon, 'utf8');
