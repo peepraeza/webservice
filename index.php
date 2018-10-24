@@ -1,6 +1,6 @@
 <?php
 require_once "lib/nusoap.php";
-require "connectdb.php";
+// require "connectdb.php";
 $us = "urn:powerdata";
 $server = new soap_server();
 $server->configureWSDL('PowerData', $us);
@@ -12,6 +12,8 @@ if(!isset($HTTP_RAW_POST_DATA)){
 }
 
 function getInfoAircon($lan){
+	$dbcon =  mysqli_connect('us-cdbr-iron-east-01.cleardb.net', 'b527b3315d2375', '50a5650c', 'heroku_412cbb6c0f293a3') or die('not connect database'.mysqli_connect_error());
+	mysqli_set_charset($dbcon, 'utf8');	
     $query = "SELECT * FROM data";
     $result = mysqli_query($dbcon, $query);
     
@@ -42,6 +44,8 @@ $server->register("getInfoAircon", array("getdata"=>"xsd:string"),
 
 
 function insertAirData($roomid, $time, $temperature, $humidity){
+	$dbcon =  mysqli_connect('us-cdbr-iron-east-01.cleardb.net', 'b527b3315d2375', '50a5650c', 'heroku_412cbb6c0f293a3') or die('not connect database'.mysqli_connect_error());
+	mysqli_set_charset($dbcon, 'utf8');	
     $insert = "INSERT INTO data (roomid, time, temperature, humidity) VALUES ('$roomid', '$time', '$temperature', '$humidity')";
 	$result = mysqli_query($dbcon, $insert);
 
