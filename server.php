@@ -32,7 +32,9 @@ $server->wsdl->addComplexType(
     )
 );
 
-
+if(!isset($HTTP_RAW_POST_DATA)){
+    $HTTP_RAW_POST_DATA = file_get_contents('php://input');
+}
 // Define the method as a PHP function
 function set_data($data) {
     $dbcon =  mysqli_connect('us-cdbr-iron-east-01.cleardb.net', 'b527b3315d2375', '50a5650c', 'heroku_412cbb6c0f293a3') or die('not connect database'.mysqli_connect_error());
@@ -82,6 +84,6 @@ $server->register('get_data',                    // method name
 
 
 // Use the request to (try to) invoke the service
-$HTTP_RAW_POST_DATA = isset($HTTP_RAW_POST_DATA) ? $HTTP_RAW_POST_DATA : '';
+
 $server->service($HTTP_RAW_POST_DATA);
 ?>
