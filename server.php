@@ -60,12 +60,15 @@ $server->register('set_data',                    // method name
 function get_data($room) {
     $dbcon =  mysqli_connect('us-cdbr-iron-east-01.cleardb.net', 'b527b3315d2375', '50a5650c', 'heroku_412cbb6c0f293a3') or die('not connect database'.mysqli_connect_error());
     mysqli_set_charset($dbcon, 'utf8');
+
     $query = "SELECT * FROM data";
     $result = mysqli_query($dbcon, $query);
-    if($result){
-        $data = array();
-        while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
-            $data[] = array('roomid'=>$row['roomid'], 'time'=>$row['time'], 'temperature'=>$row['temperature'], 'humidity'=>$row['humidity']);
+    if($result != null){
+        if($result){
+            $data = array();
+            while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+                $data[] = array('roomid'=>$row['roomid'], 'time'=>$row['time'], 'temperature'=>$row['temperature'], 'humidity'=>$row['humidity']);
+            }
         }
     }
     
