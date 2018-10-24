@@ -32,8 +32,8 @@ $server->wsdl->addComplexType(
     )
 );
 
-if(!isset($HTTP_RAW_POST_DATA)){
-    $HTTP_RAW_POST_DATA = file_get_contents('php://input');
+// if(!isset($HTTP_RAW_POST_DATA)){
+//     $HTTP_RAW_POST_DATA = file_get_contents('php://input');
 // }
 // Define the method as a PHP function
 function set_data($data) {
