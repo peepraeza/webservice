@@ -6,6 +6,10 @@ $server = new soap_server();
 // Initialize WSDL support
 $server->configureWSDL('airData', 'urn:airData');
 
+if(!isset($HTTP_RAW_POST_DATA)){
+    $HTTP_RAW_POST_DATA = file_get_contents('php://input');
+}
+
 // Register the data structures used by the service
 $server->wsdl->addComplexType(
     'AirData',
@@ -82,6 +86,6 @@ $server->register('get_data',                    // method name
 
 
 // Use the request to (try to) invoke the service
-$HTTP_RAW_POST_DATA = isset($HTTP_RAW_POST_DATA) ? $HTTP_RAW_POST_DATA : '';
+// $HTTP_RAW_POST_DATA = isset($HTTP_RAW_POST_DATA) ? $HTTP_RAW_POST_DATA : '';
 $server->service($HTTP_RAW_POST_DATA);
 ?>
