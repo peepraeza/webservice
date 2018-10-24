@@ -32,9 +32,6 @@ $server->wsdl->addComplexType(
     )
 );
 
-// if(!isset($HTTP_RAW_POST_DATA)){
-//     $HTTP_RAW_POST_DATA = file_get_contents('php://input');
-// }
 // Define the method as a PHP function
 function set_data($data) {
     $dbcon =  mysqli_connect('us-cdbr-iron-east-01.cleardb.net', 'b527b3315d2375', '50a5650c', 'heroku_412cbb6c0f293a3') or die('not connect database'.mysqli_connect_error());
@@ -43,7 +40,7 @@ function set_data($data) {
     $time = $data['time'];
     $temperature = $data['temperature'];
     $humidity = $data['humidity'];
-    $query = "INSERT INTO data_table(roomid, time, temperature, humidity) VALUES('$room','$time','$temperature','$humidity')";
+    $query = "INSERT INTO data (roomid, time, temperature, humidity) VALUES('$roomid','$time','$temperature','$humidity')";
     // $query = "INSERT INTO data_table(room, time, temp, humidity) VALUES('01', '12-09-2016 05:00', '22.5', '10.2')";
     $result = mysqli_query($dbcon, $query);
     mysqli_close($dbcon);
