@@ -1,3 +1,3 @@
 <?php 
-	$dbcon =  mysqli_connect('us-cdbr-iron-east-04.cleardb.net', 'b29063783735c9', '55796c19', 'heroku_9a687a4905ad805') or die('not connect database'.mysqli_connect_error());
-	mysqli_set_charset($dbcon, 'utf8');
+	$dbcon =  mysqli_connect('gx97kbnhgjzh3efb.cbetxkdyhwsb.us-east-1.rds.amazonaws.com', 'qetif0jsw1sib47z', 'ti46x6tcr6ythlsw', 'ndl6dvrlgnspfpk9') or die('not connect database'.mysqli_connect_error());
+	mysqli_set_charset($dbcon, 'utf8');	
