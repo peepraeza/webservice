@@ -41,7 +41,7 @@ function set_data($data) {
     $time = $data['time'];
     $temperature = $data['temperature'];
     $humidity = $data['humidity'];
-    $query = "INSERT INTO data (roomid, time, temperature, humidity) VALUES('$roomid','$time','$temperature','$humidity')";
+    $query = "INSERT INTO data (roomid, time, temperature, humidity) VALUES ('$roomid','$time','$temperature','$humidity')";
     // $query = "INSERT INTO data_table(room, time, temp, humidity) VALUES('01', '12-09-2016 05:00', '22.5', '10.2')";
     $result = mysqli_query($dbcon, $query);
     mysqli_close($dbcon);
@@ -60,7 +60,7 @@ $server->register('set_data',                    // method name
 function get_data($room) {
     $dbcon =  mysqli_connect('us-cdbr-iron-east-01.cleardb.net', 'b527b3315d2375', '50a5650c', 'heroku_412cbb6c0f293a3') or die('not connect database'.mysqli_connect_error());
     mysqli_set_charset($dbcon, 'utf8');
-    $query = "SELECT * FROM data_table";
+    $query = "SELECT * FROM data";
     $result = mysqli_query($dbcon, $query);
     if($result){
         $data = array();
