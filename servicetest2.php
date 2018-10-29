@@ -120,7 +120,7 @@ function get_info_all($anything) {
 }
 
 //Register the method to expose
-$server->register('get_data_all',           // method name
+$server->register('get_info_all',           // method name
     array('anything' => 'xsd:string'),
     array('return' => 'tns:GetMail'),    // output parameters
                         'urn:maildata');         
@@ -143,7 +143,7 @@ function get_info_from_status($status) {
 }
 
 // Register the method to expose
-$server->register('get_data_from_status',           // method name
+$server->register('get_info_from_status',           // method name
     array('status' => 'xsd:string'),
     array('return' => 'tns:GetMail'),    // output parameters
                         'urn:maildata');         
