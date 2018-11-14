@@ -1,64 +1,84 @@
 <?php
-require_once "lib/nusoap.php";
-// require "connectdb.php";
-$us = "urn:powerdata";
+// Pull in the NuSOAP code
+require_once('lib/nusoap.php');
+// Create the server instance
 $server = new soap_server();
-$server->configureWSDL('PowerData', $us);
-$server->wsdl->schemaTargerNamespace->$us;
-$server->soap_defencoding = 'utf-8';
+// Initialize WSDL support
+$server->configureWSDL('airdata', 'urn:airdata');
 
-if(!isset($HTTP_RAW_POST_DATA)){
-    $HTTP_RAW_POST_DATA = file_get_contents('php://input');
+// Register the data structures used by the service
+$server->wsdl->addComplexType(
+    'AirData',
+    'complexType',
+    'struct',
+    'sequence',
+    '',
+    array(
+        'roomid' => array('name' => 'roomid', 'type' => 'xsd:integer'),
+        'time' => array('name' => 'time', 'type' => 'xsd:string'),
+        'temperature' => array('name' => 'temperature', 'type' => 'xsd:float'),
+        'humidity' => array('name' => 'humidity', 'type' => 'xsd:float'),
+    )
+);
+
+$server->wsdl->addComplexType(
+    'GetAir',
+    'complexType',
+    'struct',
+    'sequence',
+    '',
+    array(
+        'GetAir' => array('name' => 'GetAir','minOccurs'=> '0', 'maxOccurs' =>'unbounded','nillable' => 'true', type=>'tns:AirData')
+    )
+);
+
+// Define the method as a PHP function
+function set_data($data) {
+    $dbcon =  mysqli_connect('us-cdbr-iron-east-01.cleardb.net', 'b527b3315d2375', '50a5650c', 'heroku_412cbb6c0f293a3') or die('not connect database'.mysqli_connect_error());
+    mysqli_set_charset($dbcon, 'utf8');
+    $roomid = $data['roomid'];
+    $time = $data['time'];
+    $temperature = $data['temperature'];
+    $humidity = $data['humidity'];
+    $query = "INSERT INTO data (roomid, time, temperature, humidity) VALUES('$roomid','$time','$temperature','$humidity')";
+    // $query = "INSERT INTO data_table(room, time, temp, humidity) VALUES('01', '12-09-2016 05:00', '22.5', '10.2')";
+    $result = mysqli_query($dbcon, $query);
+    mysqli_close($dbcon);
+    $send = "add data complete!";
+    return $send;
 }
 
-function getInfoAircon($lan){
-	$dbcon =  mysqli_connect('us-cdbr-iron-east-01.cleardb.net', 'b527b3315d2375', '50a5650c', 'heroku_412cbb6c0f293a3') or die('not connect database'.mysqli_connect_error());
-	mysqli_set_charset($dbcon, 'utf8');	
+// Register the method to expose
+$server->register('set_data',                    // method name
+    array('data' => 'tns:AirData'),          // input parameters
+    array('return' => 'xsd:string'),    // output parameters
+    'urn:airdata');
+
+function get_data($room) {
+    $dbcon =  mysqli_connect('us-cdbr-iron-east-01.cleardb.net', 'b527b3315d2375', '50a5650c', 'heroku_412cbb6c0f293a3') or die('not connect database'.mysqli_connect_error());
+    mysqli_set_charset($dbcon, 'utf8');
     $query = "SELECT * FROM data";
     $result = mysqli_query($dbcon, $query);
-    
-    if($result != null){
-        $xml .= "<information>";
-        if($result){
-		    while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
-		        $xml .="<data>";
-    			$xml .= "<roomid>".$row['roomid']."</roomid>";
-    			$xml .= "<time>".$row['time']."</time>";
-    			$xml .= "<temperature>".$row['temperature']."</temperature>";
-    			$xml .= "<humidity>".$row['humidity']."</humidity>";
-    			$xml .="</data>";
-		    }
-        }else{
-            $xml .= "<error>No Data</error>";
+    if($result){
+        $data = array();
+        while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+            $data[] = array('roomid'=>$row['roomid'], 'time'=>$row['time'], 'temperature'=>$row['temperature'], 'humidity'=>$row['humidity']);
         }
-        $xml .="</information>";
-    }else{
-        $xml .="<error>Error".mysqli_error()."</error>";
     }
-    $response = new soapval('return', 'xsd:string', $xml);
+    
     mysqli_close($dbcon);
-    return $response;
-}
-$server->register("getInfoAircon", array("getdata"=>"xsd:string"),
-				 				array("return"=>"xsd:string"), $us);
-
-
-function insertAirData($roomid, $time, $temperature, $humidity){
-	$dbcon =  mysqli_connect('us-cdbr-iron-east-01.cleardb.net', 'b527b3315d2375', '50a5650c', 'heroku_412cbb6c0f293a3') or die('not connect database'.mysqli_connect_error());
-	mysqli_set_charset($dbcon, 'utf8');	
-    $insert = "INSERT INTO data (roomid, time, temperature, humidity) VALUES ('$roomid', '$time', '$temperature', '$humidity')";
-	$result = mysqli_query($dbcon, $insert);
-
-    return "data inserted";
+    return array('GetAir' => $data);
 }
 
-$server->register("insertAirData", array("roomid" => "xsd:integer",
-                                         "time" => "xsd:string",
-                                         "temperature" => "xsd:float",
-                                         "humidity" => "xsd:float"),
-                                    array("return"=> "xsd:string"), $us);
+// Register the method to expose
+$server->register('get_data',                    // method name
+    array('room' => 'xsd:string'),
+    array('return' => 'tns:GetAir'),    // output parameters
+                        'urn:airdata');                  // soapaction
 
 
-$server->service($HTTP_RAW_POST_DATA);
+// Use the request to (try to) invoke the service
 
-
+// $server->service($HTTP_RAW_POST_DATA);
+@$server->service(file_get_contents("php://input"));
+?>
